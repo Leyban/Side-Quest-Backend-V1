@@ -42,6 +42,7 @@ mongoose
 const start = async () => {
     const app = express()
     const httpServer = http.createServer(app)
+    const cors = require('cors')
 
     const schema = makeExecutableSchema({ typeDefs, resolvers})
 
@@ -94,7 +95,7 @@ const start = async () => {
         path: '/',
     });
 
-    app.use(express.static('build'))
+    app.use(cors())
 
     const PORT = process.env.PORT || 4000
 
