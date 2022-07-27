@@ -85,6 +85,7 @@ const typeDefs = gql`
         createUser(username: String!, password: String!, name: String!, email: String!): User
         login(username: String!, password: String!): Token
         newTask(
+                id: ID
                 root: Boolean, 
                 supertask: [ID],
                 title: String!, 

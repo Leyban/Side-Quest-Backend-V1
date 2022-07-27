@@ -12,8 +12,6 @@ const jwt = require('jsonwebtoken')
 
 // password encryption
 const bcrypt = require('bcrypt')
-const task = require('./models/task')
-
 
 // recursive saving 
 const saveTask = (task, model, userId, supertaskList = []) => {
@@ -125,10 +123,9 @@ const resolvers = {
         newTask: async (root, args, {currentUser}) => {
             // saving to mongodb
             const newTask = new Task({...args, author: currentUser.id})
-
             try {
                 const savedTask = await newTask.save()
-               
+                
                 // appending to supertask if current task is a subtask
                 if (!args.root) {
                     const parentTask = await Task.findOne({ _id: args.supertask[args.supertask.length-1] })
@@ -147,7 +144,7 @@ const resolvers = {
                 throw new UserInputError(error.message, {
                     invalidArgs: args
                 })
-            }
+            } 
         },
         updateTask: async (root, args, {currentUser}) => {
             const taskToUpdate = await Task.findOne({_id: args.id})
@@ -220,6 +217,8 @@ const resolvers = {
                 await Task.deleteMany({supertask: {
                     $in: [args.id]
                 }})
+                currentUser.ongoing = currentUser.ongoing.filter(ongoingTask => String(ongoingTask) !== args.id)
+                await currentUser.save()
                 await Task.deleteOne({_id: args.id})
                 return 'Task Deleted'
             } catch (error) {
