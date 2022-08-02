@@ -280,10 +280,10 @@ const resolvers = {
         },
         addOngoing: async (root, args, {currentUser}) => {
             const user = currentUser
-            user.ongoing = user.ongoing.concat(args.id)
+            const updatedOngoing = user.ongoing.concat(args.id)
             
             try {
-                await user.save()
+                await User.findOneAndUpdate({ id:currentUser.id }, { ongoing: updatedOngoing })
                 return args.id
             } catch (error) {
                 throw new UserInputError(error.message, {
@@ -293,10 +293,10 @@ const resolvers = {
         },
         removeOngoing: async (root, args, {currentUser}) => {
             const user = currentUser
-            user.ongoing = user.ongoing.filter(id => String(id)!==String(args.id))
+            const updatedOngoing = user.ongoing.filter(id => String(id)!==String(args.id))
 
             try {
-                user.save()
+                await User.findOneAndUpdate({ id:currentUser.id }, { ongoing: updatedOngoing })
                 return 'Task removed from ongoing list'
             } catch (error) {
                 throw new UserInputError(error.message, {
