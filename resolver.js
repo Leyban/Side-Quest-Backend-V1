@@ -265,12 +265,12 @@ const resolvers = {
         },
         deleteTag: async (root, args, {currentUser}) => {
             const taggedTasks = await Task.find({tag: args.id})
-            currentUser.tags.filter(tagId=>tagId!==args.id)
+            currentUser.tags.filter( tagId => String(tagId) !== String(args.id) )
             try {
-                taggedTasks.map(task=>task.tag=null)
-                await taggedTasks.forEach(task=>task.save())
+                taggedTasks.map(task => task.tag = null)
+                await taggedTasks.forEach(task => task.save())
                 await currentUser.save()
-                await Tag.deleteOne({_id: args.id})
+                await Tag.deleteOne({ _id: args.id })
                 return 'Task Deleted'
             } catch (error) {
                 throw new UserInputError(error.message, {
