@@ -42,12 +42,6 @@ mongoose
 const start = async () => {
     const app = express()
     const httpServer = http.createServer(app)
-    const cors = require('cors')
-    const corsOptions ={
-      origin:'*', 
-      credentials:true,            //access-control-allow-credentials:true
-      optionSuccessStatus:200,
-    }
 
     const schema = makeExecutableSchema({ typeDefs, resolvers})
 
@@ -78,6 +72,11 @@ const start = async () => {
             }
         },
 
+        // CORS Policy
+        cors:{
+          origin: ['https://leyban.github.io/', "https://studio.apollographql.com", 'http://localhost:3000/']
+        },
+
         // Plugin for http server with subscription feature
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -100,7 +99,6 @@ const start = async () => {
         path: '/',
     });
 
-    app.use(cors(corsOptions))
 
     const PORT = process.env.PORT || 4000
 
